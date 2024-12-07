@@ -1,0 +1,313 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{fullpage}
+\usepackage[top=2cm, bottom=4.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{lastpage}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{tgpagella}
+\usepackage{physics}
+% \usepackage{minted}
+% \usepackage{erewhon-math}
+% \usepackage{unicode-math}
+% \setmathfont{texgyrepagella-math.otf}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  linkbordercolor={0 0 1}
+}
+ 
+
+\lstdefinestyle{Python}{
+    language        = Python,
+    frame           = lines, 
+    basicstyle      = \footnotesize,
+    keywordstyle    = \color{blue},
+    stringstyle     = \color{green},
+    commentstyle    = \color{red}\ttfamily
+}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+
+% Edit these as appropriate
+\newcommand\course{MATH-403}
+\newcommand\hwnumber{2}                  
+
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\comp}{\mathsf{c}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\lhead{Alix \textsc{Benoit}}
+\chead{\textbf{\Large Homework 2}}
+\rhead{\course }
+\lfoot{}
+\cfoot{}
+\rfoot{\small\thepage}
+\headsep 1.5em
+
+\begin{document}
+
+\section*{
+Exercise 1:}
+\begin{enumerate}
+    \item 
+We have 
+$$
+\norm{x_j -x^*}_2^2 = \norm{ A^\dag_u(b_u-A_ux_{j-1}) + x_{j-1} -x^*}_2^2
+= \norm{ A^\dag_u b_u -  A^\dag_u A_ux_{j-1} + x_{j-1} -x^*}_2^2
+$$
+And 
+$$
+\norm{(I-A_u^\dag A_u)(x_{j-1}-x^*)}_2^2=
+\norm{A_u^\dag A_u x^* - A_u^\dag A_u x_{j-1}+ x_{j-1}-x^*}_2^2
+$$
+Since $x^*$ is the optimal solution and since we assume the least square problem is consistent we have 
+$$
+Ax^* = b \Rightarrow A_ux^* = b_u
+$$
+Which proves
+$$
+\norm{x_j -x^*}_2^2 = \norm{(I-A_u^\dag A_u)(x_{j-1}-x^*)}_2^2
+$$    \qed
+    \item 
+% Using the sub-multiplicative property of the norm, and the linearity of the expectation we have:
+% $$
+% \mathbb{E}\norm{(I-A^\dag_uA_u)y}^2_2 \le 
+% \norm{y}^2_2\mathbb{E}\norm{(I-A^\dag_uA_u)}_2^2
+% $$
+We have that $A^\dag_uA_u$ is an orthogonal projector (since it's idempotent and symmetric). Then any vector $y\in \R^n$ can be rewritten as $y = A^\dag_uA_uy + (I - A^\dag_uA_u)y$, so $(I - A^\dag_uA_u)$ is the orthogonal complement projection matrix to $A^\dag_uA_u$.\\
+This implies 
+$$
+\norm{y}^2_2 = \norm{A^\dag_uA_uy}^2_2 + \norm{(I - A^\dag_uA_u)y}^2_2
+$$
+And hence 
+$$
+\norm{(I - A^\dag_uA_u)y}^2_2 = \norm{y}^2_2 - \norm{A^\dag_uA_uy}^2_2
+$$
+% We then need to prove:
+% $$
+% \mathbb E \norm{A^\dag_uA_uy}^2_2 \ge \frac{\sigma^2_{min}(A)}{\beta m}\norm{y}^2_2
+% $$
+% Since each $u_j$ is chosen uniformly at random we have:
+% $$
+% \mathbb E \norm{A^\dag_uA_uy}^2_2 = 
+% \frac{1}{m}\sum_{u_j \in U} \norm{A^\dag_{u_j}A_{u_j}y}^2_2
+% $$
+Then we have:
+$$
+\frac{\sigma^2_{min}(A)}{\beta m}\norm{y}^2_2
+\le
+\frac{\sum_{j=1}^m \sigma^2_{min}(A_{u_j})}{\beta m}\norm{y}^2_2
+$$
+Using the boundedness of singular values:
+$$
+\norm{A_u}_2^2 = \sigma_{max}(A_u)^2 = \lambda_{max}(A_uA_u^\top ) \le \beta
+$$
+We get
+$$
+\frac{\sum_{j=1}^m \sigma^2_{min}(A_{u_j})}{\beta m}\norm{y}^2_2
+\le 
+\sum_{j=1}^m \frac{\sigma^2_{min}(A_{u_j})}{\sigma^2_{max}(A_{u_j}) m}\norm{y}^2_2
+= 
+\sum_{j=1}^m \frac{1}{\kappa^2(A_{u_j}) m}\norm{y}^2_2
+$$
+Where $\kappa(A)$ denotes the consistency of $A$.\\
+Using the following consistency bound:
+$$
+\norm{A^\dag Ay}_2 \ge \frac{\norm{y}_2}{\kappa(A)} = \frac{\norm{y}_2}{\norm{A}_2\norm{A^\dag}_2},
+$$
+we finally get:
+$$
+\sum_{j=1}^m \frac{1}{\kappa^2(A_{u_j}) m}\norm{y}^2_2 
+\le 
+\sum_{j=1}^m \frac{1}{m}\norm{A_{u_j}^\dag A_{u_j}y}_2^2
+= 
+\mathbb E \norm{A^\dag_uA_uy}^2_2
+$$
+Since each $u_j$ is chosen uniformly at random.
+Putting everything together we have 
+$$
+\mathbb{E}\norm{(I-A^\dag_uA_u)y}^2_2
+=
+\norm{y}_2^2-\mathbb{E}\norm{A^\dag_uA_uy}^2_2
+\le 
+(1- \frac{\sigma^2_{min}(A)}{\beta m})\norm{y}^2_2
+$$
+Which is the desired bound! \qed\\
+% Using Jensen's inequality since the norm is convex:
+% $$
+% \mathbb E \norm{A^\dag_uA_uy}^2_2 \ge \norm{\mathbb E A^\dag_uA_uy }^2_2
+% $$
+% .\\
+% .\\
+% .\\
+% .\\
+
+
+% Hence we have proven:
+% $$
+% \mathbb{E}\norm{(I-A^\dag_uA_u)y}^2_2 \le 
+% (1- \frac{\sigma^2_{min}(A)}{\beta m})\norm{y}^2_2
+% $$
+Using part a) and this result (and supposing that the choice of u is independent from one iteration to another) we finally have 
+$$
+\mathbb E \norm{x_j -x^*}_2^2 = \mathbb E  \norm{(I-A_u^\dag A_u)(x_{j-1}-x^*)}_2^2 \le 
+(1- \frac{\sigma^2_{min}(A)}{\beta m})\mathbb E \norm{x_{j-1} -x^*}^2_2 
+$$   
+$$
+\le 
+(1- \frac{\sigma^2_{min}(A)}{\beta m})^j \norm{x_{0} -x^*}^2_2 
+$$
+Which completes the proof. \qed
+    
+\end{enumerate}
+
+\section*{Exercise 2: }
+\begin{enumerate}
+    \item  
+    Let us prove that $\psi(L)$ is an orthogonal projection.\\
+We first prove that $\psi(L)$ is idempotent:
+$$
+\psi(L)^2 = \left ( (L^\dag)^{\frac{1}{2}}L(L^\dag)^{\frac{1}{2}} \right )\left ( (L^\dag)^{\frac{1}{2}}L(L^\dag)^{\frac{1}{2}} \right )
+=
+(L^\dag)^{\frac{1}{2}}LL^\dag L(L^\dag)^{\frac{1}{2}} 
+= 
+(L^\dag)^{\frac{1}{2}}L(L^\dag)^{\frac{1}{2}} 
+= 
+\psi(L)
+$$
+Let us now prove symmetry:
+$$
+\psi(L)^\top = ((L^\dag)^{\frac{1}{2}})^\top L^\top ((L^\dag)^{\frac{1}{2}})^\top  
+$$
+Since G is undirected, $L$ is symmetric. \\
+We then have from the properties of the pseudo-inverse:
+$$
+\begin{cases}
+    & (LL^\dag)^\top = LL^\dag \Rightarrow (L^{\dag})^\top L = LL^\dag \\
+    & (L^\dag L)^\top = L^\dag L \Rightarrow L(L^{\dag})^\top = L^\dag L \\
+\end{cases}
+$$
+Now recall that the pseudo-inverse is uniquely defined, let us check that $(L^\dag)^\top$ satisfies all for defining properties of the pseudo-inverse of $L$:
+$$
+\begin{cases}
+    & L(L^\dag)^\top L = (L L^\dag L)^\top = (L)^\top = L\\
+    & (L^\dag)^\top L (L^\dag)^\top = (L^\dag L L^\dag)^\top  = (L^\dag)^\top \\
+    & ((L^{\dag})^\top L) ^ \top = L L^{\dag} = (L^{\dag})^\top L \\
+    & (L(L^\dag)^\top )^\top = L^\dag L = L(L^{\dag})^\top\\
+\end{cases}
+$$
+By uniqueness of the pseudo-inverse, this implies $(L^\dag)^\top = (L^\dag)$. \\
+Then since $L$ is a graph Laplacian, it is positive semi-definite (PSD), which implies that $L^\dag$ is also PSD, hence $(L^\dag)^{\frac{1}{2}}$ is also symmetric (and PSD). \\
+Thus 
+$$
+\psi(L)^\top = \psi(L)
+$$
+Which proves that $\psi(L)$ is an orthogonal projector.\qed \\
+For the second part of the question, we start with the definition of S being an $\epsilon$-spectral approximation of L:
+$$
+(1-\epsilon)L \le S \le (1+\epsilon) L \quad \Leftrightarrow \quad -\epsilon L \le S - L \le \epsilon L
+$$
+Now let us prove that $\psi$ is a monotone operator (i.e. it preserves inequalities).
+Let $B \ge A$, ($B-A$ is PSD), we have $\psi(B)-\psi(A) = \psi(B-A)$. Since $(L^\dag)^{\frac{1}{2}}$ is PSD, $\psi(B-A)$ must be PSD as well which proves $\psi$ is monotone.\\
+We then have, 
+$$
+-\epsilon L \le S - L \le \epsilon L \quad \Leftrightarrow \quad 
+-\epsilon \psi(L) \le \psi(S - L) \le \epsilon \psi(L) 
+$$
+$$
+\Leftrightarrow  \norm{\psi(S-L)}_2 \le \epsilon \norm{\psi(L)}_2 = \epsilon,
+$$
+since $\psi(L)$ is an orthogonal projector, $\norm{\psi(L)}=1$. 
+
+    
+    \item 
+In this section we shorthand $E:=E_{ii} + E_{jj} - E_{ij} - E_{ji}$.\\
+We first notice that $E$ is a rank-one matrix.\\
+Indeed, it has only two non-zero columns, one equal to $e_i - e_j$ the other $e_j - e_i$, 
+where $e_i$ denotes a zero-vector with a one in the $i$th coordinate. Multiplying one column by $-1$
+gives the other column, hence they are linear multiples of each other, and the matrix is rank one.\\
+Since $(L^\dag)^{\frac{1}{2}}$ is non-zero, it has rank at least one, and thus $\psi(E)$ 
+has rank one.\\
+This means all of its eigenvalues but one are equal to zero.\\
+The non-zero eigenvalue is equal to two, indeed:
+$$
+E(e_i - e_j) = 2(e_i - e_j)
+$$
+which shows $E$ is PSD.\\
+Using similar arguments as in part a, this implies that $\psi(E)$ is also PSD.\\
+Since $\psi(E)$ has only one non-zero eigenvalue, 
+$$
+\trace(\psi(E)) = \lambda_{max}(\psi(E)) = \norm{\psi(E)}_2.
+$$
+We then recall that the matrix representing the graph Laplacian $L$ for a connected graph has rank $n-1$.\\
+Then recall from part a that $\psi(L)$ is an orthogonal projector. This implies that 
+it has eigenvalues either $0$ or $1$. \\
+Combining these two facts, we have that
+$$
+\trace(\psi(L)) = \sum_{i=1}^{n-1} 1 = n-1.
+$$
+We then have
+$$
+\sum_{(i,j)\in E} p_{ij} = \sum_{(i,j)\in E} \frac{w_{ij}}{n-1}\norm{\psi(E_{ii} + E_{jj} - E_{ij} - E_{ji})}
+=
+\sum_{(i,j)\in E} \frac{w_{ij}\trace{(\psi(E_{ii} + E_{jj} - E_{ij} - E_{ji}))}}{n-1}
+$$
+$$
+=
+\frac{\trace(\psi({\sum_{(i,j)\in E} w_{ij}(E_{ii} + E_{jj} - E_{ij} - E_{ji})))}}{n-1}
+= \frac{\trace(\psi(L))}{n-1} = 1
+$$
+\qed
+
+
+    \item
+    
+
+
+\end{enumerate}
+
+\section*{Exercise 3: }
+\begin{enumerate}
+    \item 
+
+
+    
+    \item 
+
+
+    
+    \item
+    
+
+    \item 
+
+
+    \item 
+
+
+    
+\end{enumerate}
+
+
+\end{document}
+
